@@ -1,0 +1,32 @@
+{
+  "name": "mongo-join",
+  "description": "mongo-join provides document joins for MongoDB in Node.js. Based on the node-mongodb-native module.",
+  "author": "Chris Bumgardner <cbumgard@gmail.com>",
+  "version": "0.0.1",
+  "scripts": {
+    "test": "mocha"
+  },  
+  "main": "./lib/mongo-join",  
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cbumgard/node-mongo-join"
+  },  
+  "licenses": [
+    {
+      "type": "MIT", 
+      "url": "https://github.com/cbumgard/node-mongo-join/blob/master/LICENSE"
+    }
+  ],  
+  "dependencies": {
+    "mongodb": "1.2.x",
+    "async": "0.1.x"
+  },
+  "devDependencies": {
+    "mocha": "1.7.x",
+    "should": "1.2.x"
+  },  
+  "engines": {
+    "node": "0.8.x",
+    "npm": "1.1.x"
+  }
+}
