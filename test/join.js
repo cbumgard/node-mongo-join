@@ -57,7 +57,9 @@ describe('mongo-join', function() {
           should.exist(coll);
           collection = coll;
           collection.remove({}, callback);
-        }, function insertDocs(result, callback) {
+        }, function ensureIndex(result, callback) {
+          collection.ensureIndex({name: 1}, {w: 1, unique: true}, callback);          
+        }, function insertDocs(index, callback) {
           collection.insert(master, {w: 0});
           collection.insert(otherMaster, {w: 0});
           collection.insert(subDoc1, {w: 0});
