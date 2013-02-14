@@ -64,12 +64,18 @@ describe('mongo-join', function() {
           collection.insert(subDoc2, {w: 0});
           return callback(null, true);
         }, function findCursor(result, callback) {
-          // collection.find({name: 'master-foo'}, callback);
           collection.find({}, callback);
         }, function joinSubDocs(cursor, callback) {         
-          var join = new Join(cursor);
-          join.on('sub1').to('name').from('jointest').as('sub1');
-          join.on('sub2').to('name').from('jointest').as('sub2');
+          var join = new Join(cursor).on({
+            field: 'sub1',
+            to: 'name',
+            from: 'jointest'
+          }).on({
+            field: 'sub2',
+            as: 'sub2-doc',
+            to: 'name',
+            from: 'jointest'
+          });          
           join.cursor().toArray(callback);
         }, function showJoinedResults(doc, callback) {
           console.log('Joined results:');
