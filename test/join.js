@@ -12,7 +12,7 @@ var config = require('./config')
 describe('mongo-join', function() {
   describe('#join()', function() {
     it('Should join two documents into a third document based on keys in that third doc', function(done) {
-      var client, collection;
+      var client, collection, subCollection;
       // Construct 3 documents and insert them into a collection that will be removed.
       // There is a master document and 2 sub-documents referenced by the master doc in arbitrary fields.
       var master = {
@@ -52,18 +52,24 @@ describe('mongo-join', function() {
             : callback(null, true);
         }, function collection(authed, callback) {
           authed.should.be.true;
-          client.collection('jointest', callback);
+          client.collection('master', callback);
         }, function removeAll(coll, callback) {
           should.exist(coll);
           collection = coll;
           collection.remove({}, callback);
+        }, function subCollection(result, callback) {
+          client.collection('subord', callback);
+        }, function subRemoveAll(coll, callback) {
+          should.exist(coll);
+          subCollection = coll;
+          subCollection.remove({}, callback);          
         }, function ensureIndex(result, callback) {
-          collection.ensureIndex({name: 1}, {w: 1, unique: true}, callback);          
+          subCollection.ensureIndex({name: 1}, {w: 1, unique: true}, callback);          
         }, function insertDocs(index, callback) {
           collection.insert(master, {w: 0});
           collection.insert(otherMaster, {w: 0});
-          collection.insert(subDoc1, {w: 0});
-          collection.insert(subDoc2, {w: 0});
+          subCollection.insert(subDoc1, {w: 0});
+          subCollection.insert(subDoc2, {w: 0});
           return callback(null, true);
         }, function findCursor(result, callback) {
           collection.find({}, callback);
@@ -71,12 +77,12 @@ describe('mongo-join', function() {
           var join = new Join(cursor).on({
             field: 'sub1',
             to: 'name',
-            from: 'jointest'
+            from: 'subord'
           }).on({
             field: 'sub2',
             as: 'sub2-doc',
             to: 'name',
-            from: 'jointest'
+            from: 'subord'
           });          
           join.cursor().toArray(callback);
         }, function showJoinedResults(doc, callback) {
