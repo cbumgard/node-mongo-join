@@ -1,7 +1,7 @@
 var config = require('./config')
   , async = require('async')
   , should = require('should')
-  , Join = require('../lib/mongo-join')
+  , JoinStream = require('../lib').JoinStream
   , mongodb = require('mongodb')
   , Db = mongodb.Db
   , Cursor = mongodb.Cursor
@@ -37,8 +37,8 @@ describe('mongo-join', function() {
         description: 'answer to life, the universe, and everything',
         created: new Date()
       }; 
-      console.log('Original docs:');
-      console.dir([master, otherMaster, subDoc1, subDoc2]);
+      // console.log('Original docs:');
+      // console.dir([master, otherMaster, subDoc1, subDoc2]);
       async.waterfall([
         function openNewDbClient(callback) {
           var opts = {safe: true};
@@ -73,8 +73,9 @@ describe('mongo-join', function() {
           return callback(null, true);
         }, function findCursor(result, callback) {
           collection.find({}, callback);
-        }, function joinSubDocs(cursor, callback) {         
-          var join = new Join(cursor).on({
+        }, function joinSubDocs(cursor, callback) {   
+          var stream = cursor.stream();     
+          var join = new JoinStream(cursor).on({
             field: 'sub1',
             to: 'name',
             from: 'subord'
@@ -83,12 +84,14 @@ describe('mongo-join', function() {
             as: 'sub2-doc',
             to: 'name',
             from: 'subord'
-          });          
-          join.cursor().toArray(callback);
-        }, function showJoinedResults(doc, callback) {
-          console.log('Joined results:');
-          console.dir(doc);
-          callback(null, true);
+          });                            
+          stream.on('data', function(item) {
+            console.log('\nJoined results (stream):');  
+            console.dir(item);
+          });
+          stream.on('close', function() {
+            callback(null, true);
+          });
         }, function dropCollection(result, callback) {
           collection.drop(callback);
         }, function closeDbClient(ignore, callback) {
