@@ -4,8 +4,6 @@ var config = require('./config')
   , JoinStream = require('../lib').JoinStream
   , mongodb = require('mongodb')
   , Db = mongodb.Db
-  , Cursor = mongodb.Cursor
-  , Collection = mongodb.Collection
   , Server = mongodb.Server
   ;
 

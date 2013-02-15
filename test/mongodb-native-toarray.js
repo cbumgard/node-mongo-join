@@ -4,8 +4,6 @@ var config = require('./config')
   , Join = require('../lib').Join
   , mongodb = require('mongodb')
   , Db = mongodb.Db
-  , Cursor = mongodb.Cursor
-  , Collection = mongodb.Collection
   , Server = mongodb.Server
   ;
 
@@ -84,7 +82,7 @@ describe('mongo-join', function() {
             to: 'name',
             from: 'subord'
           });          
-          join.cursor().toArray(callback);
+          cursor.toArray(callback);
         }, function showJoinedResults(doc, callback) {
           console.log('\nJoined results (toArray):');
           console.dir(doc);
