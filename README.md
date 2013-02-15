@@ -12,6 +12,8 @@ Let's say for example you have the following three collections:
 
 You want to query the employees and get back their employer and contact info. You'd like the employer document to replace the ObjectID that represents it in the employee document. You'd like the contact document to be added as a separate field in the employee document. Here is an example of that:
 
+```javascript
+
     // Query an employees collection, whose documents contain fields
     // referencing documents in the employer and contacts collections.
     var Join = require('mongo-join').Join
@@ -38,6 +40,7 @@ You want to query the employees and get back their employer and contact info. Yo
         });
       });  
     });
+```
 
 ## Streaming
 
