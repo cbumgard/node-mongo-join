@@ -14,32 +14,32 @@ You want to query the employees and get back their employer and contact info. Yo
 
 ```javascript
 
-    // Query an employees collection, whose documents contain fields
-    // referencing documents in the employer and contacts collections.
-    var Join = require('mongo-join').Join
-      , config = require('./config') // <- for example purposes
-      , mongodb = require('mongodb')
-      , Db = mongodb.Db
-      , Server = mongodb.Server;
+// Query an employees collection, whose documents contain fields
+// referencing documents in the employer and contacts collections.
+var Join = require('mongo-join').Join
+  , config = require('./config') // <- for example purposes
+  , mongodb = require('mongodb')
+  , Db = mongodb.Db
+  , Server = mongodb.Server;
 
-    var client = new Db(config.dbname, new Server(config.host, config.port));
-    client.open(function(err, client) {
-      client.collection('employees', function(err, employees) {
-        employees.find({}, function(err, cursor) {
-          var join = new Join(cursor).on({
-            field: 'employer', // <- field in employee doc
-            to: '_id',         // <- field in employer doc
-            from: 'employers'  // <- collection name for employer doc
-          }).on({
-            field: 'contactEmail', // <- field in employee doc
-            as: 'contactInfo',     // <- new field in employee for contact doc
-            to: 'email',           // <- field in contact doc
-            from: 'contacts'       // <- collection name for contact doc
-          });          
-          cursor.toArray(callback);
-        });
-      });  
+var client = new Db(config.dbname, new Server(config.host, config.port));
+client.open(function(err, client) {
+  client.collection('employees', function(err, employees) {
+    employees.find({}, function(err, cursor) {
+      var join = new Join(cursor).on({
+        field: 'employer', // <- field in employee doc
+        to: '_id',         // <- field in employer doc
+        from: 'employers'  // <- collection name for employer doc
+      }).on({
+        field: 'contactEmail', // <- field in employee doc
+        as: 'contactInfo',     // <- new field in employee for contact doc
+        to: 'email',           // <- field in contact doc
+        from: 'contacts'       // <- collection name for contact doc
+      });          
+      cursor.toArray(callback);
     });
+  });  
+});
 ```
 
 ## Streaming
