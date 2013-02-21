@@ -10,6 +10,15 @@ While building an ad-hoc reporting and export-to-csv library, I found myself doi
 
 This is experimental currently. Much more testing (functional, integration, performance) needs to be added. It passes all initial proof-of-concept tests I have written. Performance has not yet been tackled, although I have ideas in this area. Currently a separate findOne() query is executed against each collection that is joined into the master document. *If you are interested I would love your help, especially for testing and performance optimizations!* Please send pull requests.
 
+## Goals
+
+- Integration with other mongo libraries for node, e.g. [mongoose](http://mongoosejs.com/) and [mongoskin](https://github.com/kissjs/node-mongoskin). Join depends solely on a node-mongodb-native Db client which hopefully will make that relatively easy.
+- Performance optimizations. One thought, say for toArray(), is to obtain cursors on the secondary collections and call toArray() on them, and join by iterating and mapping. This will be more memory intensive.
+
+## Installation
+
+```npm install mongo-join```
+
 ## Example
 
 Let's say for example you have the following three collections:
