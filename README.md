@@ -4,11 +4,11 @@ __mongo-join__ provides simple document joins for [MongoDB](http://www.mongodb.o
 
 ## Why
 
-While building an ad-hoc query and export to .csv library, I found myself doing repetitive 'join'-type queries to merge together documents across different collections. 
+While building an ad-hoc reporting and export-to-csv library, I found myself doing repetitive 'join'-type queries to merge together documents across different collections. 
 
 ## Status
 
-This is experimental currently. Much more testing (functional, integration, performance) needs to be added. It passes all initial proof-of-concept tests I have written. Performance has not yet been tackled, although I have ideas in this area. Currently a separate findOne() query is executed against each collection that is joined into the master document.
+This is experimental currently. Much more testing (functional, integration, performance) needs to be added. It passes all initial proof-of-concept tests I have written. Performance has not yet been tackled, although I have ideas in this area. Currently a separate findOne() query is executed against each collection that is joined into the master document. *If you are interested I would love your help, especially for testing and performance optimizations!* Please send pull requests.
 
 ## Example
 
