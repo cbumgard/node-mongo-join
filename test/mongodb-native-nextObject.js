@@ -86,16 +86,16 @@ describe('mongo-join', function() {
         }, function nextObject1(cursor, callback) {
           join.nextObject(cursor, function(err, doc) {
             if (doc) {
-              console.log('\nJoined result (nextObject):');
-              console.dir(doc);
+              // console.log('\nJoined result (nextObject):');
+              // console.dir(doc);
               callback(null, cursor);
             }
           });            
         }, function nextObject2(cursor, callback) {
           join.nextObject(cursor, function(err, doc) {
             if (doc) {
-              console.log('\nJoined result (nextObject):');
-              console.dir(doc);
+              // console.log('\nJoined result (nextObject):');
+              // console.dir(doc);
               callback(null, null);
             }
           });                      

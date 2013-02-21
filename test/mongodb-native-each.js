@@ -86,8 +86,8 @@ describe('mongo-join', function() {
           join.each(cursor, function(err, doc) {
             if (doc) {
               counter ++;
-              console.log('\nJoined result (each):');
-              console.dir(doc);
+              // console.log('\nJoined result (each):');
+              // console.dir(doc);
               if (counter >= 2) callback(null, null);
             }
           });            

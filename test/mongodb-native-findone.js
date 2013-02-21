@@ -81,16 +81,16 @@ describe('mongo-join', function() {
         }, function joinSubDoc1(cursor, callback) {         
           join.findOne(collection, {name: 'master-foo'}, function(err, doc) {
             if (doc) {
-              console.log('\nJoined result (findOne):');
-              console.dir(doc);
+              // console.log('\nJoined result (findOne):');
+              // console.dir(doc);
               callback(null, null)
             }
           });           
         }, function joinSubDoc2(ignore, callback) { 
           join.findOne(collection, {name: 'master-goo'}, function(err, doc) {
             if (doc) {
-              console.log('\nJoined result (findOne):');
-              console.dir(doc);
+              // console.log('\nJoined result (findOne):');
+              // console.dir(doc);
               callback(null, null);
             }
           });                      

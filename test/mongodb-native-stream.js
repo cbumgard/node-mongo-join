@@ -85,8 +85,8 @@ describe('mongo-join', function() {
           });         
           join.stream(stream, 'data', function(item) {
             count++;
-            console.log('\nJoined results (stream):');  
-            console.dir(item);
+            // console.log('\nJoined results (stream):');  
+            // console.dir(item);
             if (count >= 2) callback(null, null);
           });
         }, function dropCollection(result, callback) {

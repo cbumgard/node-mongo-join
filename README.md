@@ -1,6 +1,14 @@
 # mongo-join
 
-__mongo-join__ provides document joins for MongoDB in Node.js. Based on the [node-mongodb-native](https://github.com/mongodb/node-mongodb-native) module.
+__mongo-join__ provides simple document joins for [MongoDB](http://www.mongodb.org/) in [Node.js](http://nodejs.org/). Based on the [node-mongodb-native](https://github.com/mongodb/node-mongodb-native) module.
+
+## Why
+
+While building an ad-hoc query and export to .csv library, I found myself doing repetitive 'join'-type queries to merge together documents across different collections. 
+
+## Status
+
+This is experimental currently. Much more testing (functional, integration, performance) needs to be added. It passes all initial proof-of-concept tests I have written. Performance has not yet been tackled, although I have ideas in this area. Currently a separate findOne() query is executed against each collection that is joined into the master document.
 
 ## Example
 

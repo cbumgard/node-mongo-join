@@ -82,8 +82,8 @@ describe('mongo-join', function() {
           });          
           join.toArray(cursor.sort('name', 'ascending'), callback);
         }, function showJoinedResults(items, callback) {
-          console.log('\nJoined results (toArray):');
-          console.dir(items);
+          // console.log('\nJoined results (toArray):');
+          // console.dir(items);
           callback(null, true);
         }, function dropCollection(result, callback) {
           collection.drop(callback);
