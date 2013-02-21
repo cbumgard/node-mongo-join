@@ -20,7 +20,8 @@
   "dependencies": {
     "mongodb": "1.2.x",    
     "async": "0.1.x",
-    "underscore": "1.4.x"
+    "underscore": "1.4.x",
+    "semaphore": "1.0.x"
   },
   "devDependencies": {
     "mocha": "1.7.x",
