@@ -35,6 +35,7 @@ describe('mongo-join', function() {
         description: 'answer to life, the universe, and everything',
         created: new Date()
       }; 
+      var join;
       // console.log('Original docs:');
       // console.dir([master, otherMaster, subDoc1, subDoc2]);
       async.waterfall([
@@ -44,6 +45,16 @@ describe('mongo-join', function() {
           client.open(callback);
         }, function authenticate(client, callback) {
           should.exist(client);
+          join = new Join(client).on({
+            field: 'sub1',
+            to: 'name',
+            from: 'subord'
+          }).on({
+            field: 'sub2',
+            as: 'sub2-doc',
+            to: 'name',
+            from: 'subord'
+          });        
           var doAuth = (config.username && config.password);
           doAuth
             ? client.authenticate(config.username, config.password, callback) 
@@ -69,23 +80,15 @@ describe('mongo-join', function() {
           subCollection.insert(subDoc1, {w: 0});
           subCollection.insert(subDoc2, {w: 0});
           return callback(null, true);
-        }, function joinSubDocs(cursor, callback) {         
-          var join = new Join(client).on({
-            field: 'sub1',
-            to: 'name',
-            from: 'subord'
-          }).on({
-            field: 'sub2',
-            as: 'sub2-doc',
-            to: 'name',
-            from: 'subord'
-          });        
+        }, function joinSubDoc1(cursor, callback) {         
           join.findOne(collection, {name: 'master-foo'}, function(err, doc) {
             if (doc) {
               console.log('\nJoined result (findOne):');
               console.dir(doc);
+              callback(null, null)
             }
-          });            
+          });           
+        }, function joinSubDoc2(ignore, callback) { 
           join.findOne(collection, {name: 'master-goo'}, function(err, doc) {
             if (doc) {
               console.log('\nJoined result (findOne):');

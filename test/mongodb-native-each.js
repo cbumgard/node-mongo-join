@@ -35,6 +35,7 @@ describe('mongo-join', function() {
         description: 'answer to life, the universe, and everything',
         created: new Date()
       }; 
+      var join;
       // console.log('Original docs:');
       // console.dir([master, otherMaster, subDoc1, subDoc2]);
       async.waterfall([
@@ -44,6 +45,16 @@ describe('mongo-join', function() {
           client.open(callback);
         }, function authenticate(client, callback) {
           should.exist(client);
+          join = new Join(client).on({
+            field: 'sub1',
+            to: 'name',
+            from: 'subord'
+          }).on({
+            field: 'sub2',
+            as: 'sub2-doc',
+            to: 'name',
+            from: 'subord'
+          });                             
           var doAuth = (config.username && config.password);
           doAuth
             ? client.authenticate(config.username, config.password, callback) 
@@ -72,18 +83,9 @@ describe('mongo-join', function() {
         }, function findCursor(result, callback) {
           collection.find({}, callback);
         }, function joinSubDocs(cursor, callback) {         
-          var counter = 0;
-          var join = new Join(client).on({
-            field: 'sub1',
-            to: 'name',
-            from: 'subord'
-          }).on({
-            field: 'sub2',
-            as: 'sub2-doc',
-            to: 'name',
-            from: 'subord'
-          });        
-          join.each(cursor.sort('name', 'ascending'), function(err, doc) {
+          var cursor = cursor.sort('name', 'ascending');
+          var counter = 0;     
+          join.each(cursor, function(err, doc) {
             if (doc) {
               counter ++;
               console.log('\nJoined result (each):');
