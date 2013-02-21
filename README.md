@@ -28,7 +28,7 @@ You want to query the employees and get back their employer and contact info. Yo
         employees.find({}, function(err, cursor) {
           var join = new Join(client).on({
             field: 'employer', // <- field in employee doc
-            to: '_id',         // <- field in employer doc
+            to: '_id',         // <- field in employer doc. treated as ObjectID automatically.
             from: 'employers'  // <- collection name for employer doc
           }).on({
             field: 'contactEmail', // <- field in employee doc
@@ -71,17 +71,22 @@ A new Join is constructed on a mongodb client. E.g. ```var join = new Join(clien
 Join instances are configured via the API method ```join.on(opts)```, which takes an opts object containing the following options describing how to join documents from secondary collections into the documents in the primary collection. The ```join.on(opts)``` method returns back the instance of the join so it can be chained. The opts object contains the following fields:
 
     /**
-     * Add a new join on another collection.
-     * @param  {Object} opts Must contain fields 'field', 'to', and 'from', and
-     * optionally 'as'. 'field' specifies the field name in this cursor's doc
-     * that references a foreign collection's doc we want to join. 'to' 
-     * represents the field name in the foreign collection's doc, and 'from'
-     * represents the name of the foreign collection. optionally 'as' specifies
-     * a new or existing field in this collection's doc that will hold the
-     * joined doc from the foreign collection. If 'as' is omitted, the joined
-     * doc by default will be stored in the 'field' field.
-     * @return {Join}   This instance. Can be used to chain .on() method calls.
-     */
+    * Add a new join on another collection.
+    * @param  {Object} opts Must contain fields 'field', 'to', and 'from', and
+    * optionally 'as'. 
+    * 'field' specifies the field name in this cursor's doc
+    * that references a foreign collection's doc we want to join. 
+    * 'to' represents the field name in the foreign collection's doc
+    * 'from' represents the name of the foreign collection. 
+    * 'as' optionally specifies a new or existing field in this 
+    * collection's doc that will hold the
+    * joined doc from the foreign collection. If 'as' is omitted, the joined
+    * doc by default will be stored in the 'field' field.
+    * 'id' optionally specifies (true or false) whether the 'to' field should be
+    * treated as a MongoDB ObjectID. By default true if 'to' is the field '_id'
+    * and false otherwise.
+    * @return {Join}   This instance. Can be used to chain .on() method calls.
+    */
 
 ### findOne(collection, query, [opts], callback)
 

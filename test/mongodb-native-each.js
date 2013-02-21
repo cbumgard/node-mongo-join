@@ -36,8 +36,6 @@ describe('mongo-join', function() {
         created: new Date()
       }; 
       var join;
-      // console.log('Original docs:');
-      // console.dir([master, otherMaster, subDoc1, subDoc2]);
       async.waterfall([
         function openNewDbClient(callback) {
           var opts = {safe: true};

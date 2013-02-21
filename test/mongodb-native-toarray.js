@@ -35,8 +35,6 @@ describe('mongo-join', function() {
         description: 'answer to life, the universe, and everything',
         created: new Date()
       }; 
-      // console.log('Original docs:');
-      // console.dir([master, otherMaster, subDoc1, subDoc2]);
       async.waterfall([
         function openNewDbClient(callback) {
           var opts = {safe: true};
