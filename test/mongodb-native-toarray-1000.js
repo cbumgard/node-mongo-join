@@ -15,10 +15,12 @@ describe('mongo-join', function() {
 
       var client
         , collection
-        , subCollection
-        , count = 10000
+        , secCollection
+        , terCollection
+        , count = 1000
         , primaryColName = 'primary'
         , secondaryColName = 'secondary'
+        , tertiaryColName = 'tertiary'        
         , startTimeReg
         , endTimeReg
         , startTimeJoin
@@ -43,12 +45,18 @@ describe('mongo-join', function() {
           should.exist(coll);
           collection = coll;
           collection.remove({}, callback);
-        }, function subCollection(result, callback) {
-          client.collection(secondaryColName, callback);
-        }, function subRemoveAll(coll, callback) {
+        }, function secCollection(result, callback) {
+          client.collection(secondaryColName, callback);         
+        }, function secRemoveAll(coll, callback) {
           should.exist(coll);
-          subCollection = coll;
-          subCollection.remove({}, callback);                   
+          secCollection = coll;
+          secCollection.remove({}, callback);           
+        }, function terCollection(result, callback) {
+          client.collection(tertiaryColName, callback);                   
+        }, function terRemoveAll(coll, callback) {
+          should.exist(coll);
+          terCollection = coll;
+          terCollection.remove({}, callback);                     
         }, function ensureIndex(result, callback) {
           collection.ensureIndex({name: 1}, {w: 1, unique: true}, callback);             
         }, function insertDocs(index, callback) {
@@ -60,15 +68,22 @@ describe('mongo-join', function() {
                 name: 'secondary' + counter,
                 created: new Date()
               };
-              subCollection.insert(secondaryDoc, {safe: true}, function(err, subDocs) {
-                var primaryDoc = {
-                  name: 'primary' + counter,
-                  joindoc: subDocs[0]._id,
+              secCollection.insert(secondaryDoc, {safe: true}, function(err, secDocs) {
+                var tertiaryDoc = {
+                  name: 'tertiary' + counter,
                   created: new Date()
                 };
-                collection.insert(primaryDoc, {safe: true}, function(err, pDoc) {
-                  counter++;
-                  fn(err);
+                terCollection.insert(tertiaryDoc, {safe: true}, function(err, terDocs) {
+                  var primaryDoc = {
+                    name: 'primary' + counter,
+                    secondary: secDocs[0]._id,
+                    tertiary: terDocs[0]._id,
+                    created: new Date()
+                  };
+                  collection.insert(primaryDoc, {safe: true}, function(err, pDoc) {
+                    counter++;
+                    fn(err);
+                  });
                 });
               });
             },
@@ -90,22 +105,29 @@ describe('mongo-join', function() {
         }, function joinSubDocs(cursor, callback) {         
           var cursor = cursor.sort('name', 'ascending');
           var join = new Join(client).on({
-            field: 'joindoc',
+            field: 'secondary',
             to: '_id',
             from: secondaryColName
+          }).on({
+            field: 'tertiary',
+            to: '_id',
+            from: tertiaryColName,
+            as: 'tertiary_alias'
           });          
           startTimeJoin = new Date().getTime();
           join.toArray(cursor, callback);
         }, function showJoinedResults(items, callback) {
           endTimeJoin = new Date().getTime();
-          // console.dir(items.slice(0, 2));
+          console.dir(items.slice(0, 1));
           console.log('***** Joined query time total for %s docs: %s ms', 
             items.length, (endTimeJoin - startTimeJoin));
           callback(null, true);
         }, function dropCollection(result, callback) {
           collection.drop(callback);
-        }, function dropSubCollection(result, callback) {
-          subCollection.drop(callback);          
+        }, function dropSecCollection(result, callback) {
+          secCollection.drop(callback);          
+        }, function dropTerCollection(result, callback) {
+          terCollection.drop(callback);                    
         }, function closeDbClient(ignore, callback) {
           client.close();
           return done();
