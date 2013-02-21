@@ -11,14 +11,18 @@ describe('mongo-join', function() {
   describe('#join()', function() {
     it('Should join 1000 documents to a secondary collection', function(done) {
       
-      // this.timeout(20000);
+      this.timeout(10000);
 
       var client
         , collection
         , subCollection
-        , count = 1000
+        , count = 10000
         , primaryColName = 'primary'
         , secondaryColName = 'secondary'
+        , startTimeReg
+        , endTimeReg
+        , startTimeJoin
+        , endTimeJoin
         ;
       // Construct 1000 documents and insert them into a collection that will be removed.
       async.waterfall([
@@ -74,6 +78,15 @@ describe('mongo-join', function() {
           );
         }, function findCursor(callback) {
           collection.find({}, callback);
+        }, function findNoJoin(cursor, callback) {
+          var cursor = cursor.sort('name', 'ascending');
+          startTimeReg = new Date().getTime();
+          cursor.toArray(callback);
+        }, function regularToArray(items, callback) {
+          endTimeReg = new Date().getTime();
+          console.log('***** Regular query time total for %s docs: %s ms', 
+            items.length, (endTimeReg - startTimeReg));
+          collection.find({}, callback);
         }, function joinSubDocs(cursor, callback) {         
           var cursor = cursor.sort('name', 'ascending');
           var join = new Join(client).on({
@@ -81,10 +94,13 @@ describe('mongo-join', function() {
             to: '_id',
             from: secondaryColName
           });          
+          startTimeJoin = new Date().getTime();
           join.toArray(cursor, callback);
         }, function showJoinedResults(items, callback) {
-          console.log('\nJoined results (toArray) length: %s', items.length);
-          console.dir(items.slice(0, 2));
+          endTimeJoin = new Date().getTime();
+          // console.dir(items.slice(0, 2));
+          console.log('***** Joined query time total for %s docs: %s ms', 
+            items.length, (endTimeJoin - startTimeJoin));
           callback(null, true);
         }, function dropCollection(result, callback) {
           collection.drop(callback);
