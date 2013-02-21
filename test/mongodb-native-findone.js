@@ -69,10 +69,7 @@ describe('mongo-join', function() {
           subCollection.insert(subDoc1, {w: 0});
           subCollection.insert(subDoc2, {w: 0});
           return callback(null, true);
-        }, function findCursor(result, callback) {
-          collection.find({}, callback);
         }, function joinSubDocs(cursor, callback) {         
-          var counter = 0;
           var join = new Join(client).on({
             field: 'sub1',
             to: 'name',
@@ -83,14 +80,19 @@ describe('mongo-join', function() {
             to: 'name',
             from: 'subord'
           });        
-          join.each(cursor.sort('name', 'ascending'), function(err, doc) {
+          join.findOne(collection, {name: 'master-foo'}, function(err, doc) {
             if (doc) {
-              counter ++;
-              console.log('\nJoined result (each):');
+              console.log('\nJoined result (findOne):');
               console.dir(doc);
-              if (counter >= 2) callback(null, null);
             }
           });            
+          join.findOne(collection, {name: 'master-goo'}, function(err, doc) {
+            if (doc) {
+              console.log('\nJoined result (findOne):');
+              console.dir(doc);
+              callback(null, null);
+            }
+          });                      
         }, function dropCollection(result, callback) {
           collection.drop(callback);
         }, function dropSubCollection(result, callback) {
