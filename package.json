@@ -2,7 +2,7 @@
   "name": "mongo-join",
   "description": "mongo-join provides document joins for MongoDB in Node.js. Based on the node-mongodb-native module.",
   "author": "Chris Bumgardner <cbumgard@gmail.com>",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "scripts": {
     "test": "mocha"
   },  
