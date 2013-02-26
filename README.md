@@ -67,14 +67,10 @@ In the example above, instead of ```join.toArray()``` we would do:
 
 ```javascript
 
-    var stream = cursor.stream();
-    join.stream(stream, 'data', function(joinedDoc) {
+    var stream = join.stream(cursor);
+    stream.on('data', function(joinedDoc) {
       // handle joined document here
     });
-    join.stream(stream, 'close', function() {
-      // handle stream closing here as usual
-      // could also just call stream.on('close', function() {})
-    });    
 ```
 
 ## API
@@ -154,11 +150,11 @@ Join instances are configured via the API method ```join.on(opts)```, which take
 ### stream(stream, event, callback)
 
     /**
-     * Performs a join on documents emitted from a cursor stream based
-     * on a collection query.
-     * @param  {CursorStream} _stream A stream opened via cursor.stream().
-     * @param  {String}       event   If 'data' then the callback is passed
-     * a joined document. Any other event is handled as usual.
-     * @param  {Function}     fn      Callback of the form (joinedDoc).
-     * @return {None}
+     * Modifies a MongoDB native cursor stream so that documents from 
+     * emitted 'data' type events will be joined based on the join criteria
+     * for this instance.
+     * @param  {Cursor} cursor Cursor for a collection query that will be streamed.
+     * @return {CursorStream} A CursorStream whose .on() method is proxied
+     * so that 'data' type events are captured and the emitted document
+     * is joined before resuming the stream.
      */

@@ -71,7 +71,6 @@ describe('mongo-join', function() {
           collection.find({}, callback);
         }, function joinSubDocs(cursor, callback) {   
           var cursor = cursor.sort('name', 'ascending');
-          var stream = cursor.stream();                   
           var join = new Join(client).on({
             field: 'sub1',
             to: 'name',
@@ -82,11 +81,12 @@ describe('mongo-join', function() {
             to: 'name',
             from: 'subord'
           });         
-          join.stream(stream, 'data', function(item) {
+          var stream = join.stream(cursor);
+          stream.on('data', function(item) {
             // console.log('\nJoined results (stream):');  
             // console.dir(item);
           });
-          join.stream(stream, 'end', function() {
+          stream.on('end', function() {
             callback(null, null);
           });
         }, function dropCollection(result, callback) {
